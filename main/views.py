@@ -1,4 +1,4 @@
-from django.http import HttpResponse
+from django.http import HttpResponse, Http404
 from django.shortcuts import render, redirect
 
 from .forms import FlashCardForm
@@ -45,6 +45,8 @@ def main(request, position=None):
 
 
 def edit(request):
+    if not request.user.is_authenticated:
+        raise Http404('You don\'t have permission to edit cards')
     cards = FlashCard.objects.all().order_by('cue')
     if request.method == 'POST':
         form = FlashCardForm(request.POST)

@@ -2,7 +2,10 @@
 
 {% block content %}
     <div id="body-wrapper" class="container-fluid overflow-hidden pt-2">
-        <div class="card bg-dark border-secondary">
+        <div class="row">
+            <div class="col-0 col-xl-3"></div>
+            <div class="col-12 col-xl-6">
+                <div class="card bg-dark border-secondary">
             <div class="card-header border-secondary">
                 {{ card.category }}
             </div>
@@ -16,9 +19,10 @@
                 <button id="reveal-button" class="btn btn-primary">Reveal</button>
             </div>
             <div class="card-footer text-muted">
-                <a href="/{{ position|add:"-1" }}" class="btn btn-primary"><</a>
+                <a href="/{{ position|add:"-1" }}" class="btn btn-secondary"><</a>
                 <span>{{ position|add:"1" }}/{{ total }}</span>
-                <a href="/{{ position|add:"1" }}" class="btn btn-primary">></a>
+                <a href="/{{ position|add:"1" }}" class="btn btn-secondary">></a>
+            </div>
             </div>
         </div>
     </div>
