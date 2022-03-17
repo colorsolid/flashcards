@@ -1,5 +1,10 @@
+import json
+import os
+
 from django.http import HttpResponse, Http404
 from django.shortcuts import render, redirect
+
+from flashcards.settings import BASE_DIR
 
 from .forms import FlashCardForm
 from .models import FlashCard
@@ -45,7 +50,7 @@ def main(request, position=None):
 
 
 def edit(request):
-    if not request.user.is_authenticated:
+    if not request.user.is_superuser:
         raise Http404('You don\'t have permission to edit cards')
     cards = FlashCard.objects.all().order_by('cue')
     if request.method == 'POST':
@@ -83,3 +88,35 @@ def shuffle(request):
     for card in cards:
         request.session['card_ids'].append(card.id)
     return redirect('/0')
+
+
+def load(request):
+    if request.user.is_superuser:
+        file_path = os.path.join(BASE_DIR, 'dump.json')
+        if os.path.isfile(file_path):
+            with open(file_path) as f:
+                data = json.load(f)
+            cards = []
+            for card_data in data:
+                cards.append(FlashCard(**card_data))
+            FlashCard.objects.bulk_create(cards)
+    return redirect('/')
+
+
+def dump(request):
+    if request.user.is_superuser:
+        file_path = os.path.join(BASE_DIR, 'dump.json')
+        cards = FlashCard.objects.all()
+        data = []
+        for card in cards:
+            card_data = {
+                'category': card.category,
+                'cue': card.cue,
+                'cue_expanded': card.cue_expanded,
+                'info': card.info
+            }
+            data.append(card_data)
+        with open(file_path, 'w+') as f:
+            json.dump(data, f)
+    return redirect('/')
+
