@@ -17,7 +17,7 @@ from django.contrib import admin
 from django.urls import path
 
 from main import views
-from utils import env
+from flashcards.utils import env
 
 urlpatterns = [
     path('', views.main),
