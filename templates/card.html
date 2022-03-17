@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div id="body-wrapper" class="container-fluid overflow-hidden pt-2">
+        <div class="card bg-dark border-secondary">
+            <div class="card-header border-secondary">
+                {{ card.category }}
+            </div>
+            <div class="card-body">
+                <h5 class="card-title">
+                    <span class="opt-0">{{ card.cue }}</span><br>
+                    <span class="cue-expanded">{{ card.cue_expanded }}</span>
+                </h5>
+                <hr>
+                <p class="card-text opt-1">{{ card.info|linebreaksbr }}</p>
+                <button id="reveal-button" class="btn btn-primary">Reveal</button>
+            </div>
+            <div class="card-footer text-muted">
+                <a href="/{{ position|add:"-1" }}" class="btn btn-primary"><</a>
+                <span>{{ position|add:"1" }}/{{ total }}</span>
+                <a href="/{{ position|add:"1" }}" class="btn btn-primary">></a>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript">
+        let choice = Math.floor(Math.random() * 2)
+        let elems = [
+            document.querySelector(`.opt-${choice}`),
+            document.querySelector('.cue-expanded')
+        ]
+        for (let elem of elems) {
+            elem.classList.add('invisible')
+        }
+        document.querySelector('#reveal-button').onclick = function() {
+            for (let elem of elems) {
+                elem.classList.remove('invisible')
+            }
+        }
+    </script>
+{% endblock %}

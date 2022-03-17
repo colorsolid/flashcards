@@ -1,0 +1,90 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block head_extend %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}">
+{% endblock %}
+
+{% load crispy_forms_tags %}
+
+{% block content %}
+    <div class="container-fluid">
+        <div class="row">
+            <div id="card-list" class="col-12 col-lg-2 d-grid gap-2 mt-3">
+                {% for card in cards %}
+                    <button class="btn btn-primary" data-category="{{ card.category }}" data-cue="{{ card.cue }}"
+                            data-cue_expanded="{{ card.cue_expanded }}" data-info="{{ card.info }}"
+                            data-id="{{ card.id }}">
+                        {{ card }}
+                    </button>
+                {% endfor %}
+            </div>
+            <div class="col-12 col-lg-10">
+                <div id="message"></div>
+                <form hx-post="/edit/" hx-target="#message">
+                    {% csrf_token %}
+                    <div id="body-wrapper" class="container-fluid overflow-hidden pt-2">
+                        <div class="card bg-dark border-secondary">
+                            <div class="card-header border-secondary">
+                                {{ form.category|as_crispy_field }}
+                            </div>
+                            <div class="card-body">
+                                <h5 class="card-title">
+                                    {{ form.cue|as_crispy_field }}
+                                    {{ form.cue_expanded|as_crispy_field }}
+                                </h5>
+                                <p class="card-text">{{ form.info|as_crispy_field }}</p>
+                                {{ form.id }}
+                                <button type="button" class="btn btn-primary" id="new-button">New</button>
+                                <input id="submit-button" type="submit" class="btn btn-primary" value="Save">
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript">
+        let category = document.getElementById('id_category')
+        let cue = document.getElementById('id_cue')
+        let cue_expanded = document.getElementById('id_cue_expanded')
+        let info = document.getElementById('id_info')
+        let id = document.getElementById('id_id')
+        let fields = [category, cue, cue_expanded, info, id]
+        let buttons = document.querySelectorAll('#card-list button')
+        for (let button of buttons) {
+            button.onclick = function (event) {
+                category.value = this.dataset.category
+                cue.value = this.dataset.cue
+                cue_expanded.value = this.dataset.cue_expanded
+                info.value = this.dataset.info
+                id.value = this.dataset.id
+                reset_buttons()
+                this.classList.remove('btn-primary')
+                this.classList.add('btn-secondary')
+                this.blur()
+            }
+        }
+        let submit_button = document.getElementById('submit-button')
+        submit_button.onclick = function (event) {
+            setTimeout(clear_id, 200)
+        }
+
+        function clear_id() {
+            id.value = ''
+        }
+
+        function reset_buttons() {
+            for (let button of buttons) {
+                button.classList.remove('btn-secondary')
+                button.classList.add('btn-primary')
+            }
+        }
+
+        document.getElementById('new-button').onclick = function() {
+            clear_id()
+            reset_buttons()
+        }
+    </script>
+{% endblock %}
