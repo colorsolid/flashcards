@@ -23,6 +23,7 @@ urlpatterns = [
     path('', views.main),
     path('edit/', views.edit),
     path('shuffle/', views.shuffle),
+    path('shuffle/<str:category>/', views.shuffle),
     path('load/', views.load),
     path('dump/', views.dump),
     path(env('ADMIN_PATH') + '/', admin.site.urls),

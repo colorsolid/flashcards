@@ -80,8 +80,12 @@ def edit(request):
     return render(request, 'card_edit.html', context)
 
 
-def shuffle(request):
-    cards = list(FlashCard.objects.all())
+def shuffle(request, category=None):
+    if category is not None:
+        cards = list(FlashCard.objects.filter(category__iexact=category))
+    if category is None or not cards:
+        cards = list(FlashCard.objects.all())
+    print(cards)
     request.session['card_ids'] = []
     request.session['position'] = 0
     random.shuffle(cards)
